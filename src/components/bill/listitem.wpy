@@ -40,7 +40,7 @@
       font-size: 28rpx;
     }
     .title{
-      flex: 1;
+      flex: auto;
     }
   }
 </style>

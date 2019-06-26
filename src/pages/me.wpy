@@ -64,10 +64,12 @@
     data = {
       userInfo: {},
       assets: 12330,
-      hours: 120
+      hours: 360
     }
 
     onLoad() {
+      console.log('1onLoad=============')
+      this.userInfo = this.$parent.globalData.userInfo
       let self = this
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
@@ -75,6 +77,19 @@
         }
         self.$apply()
       })
+      console.log('2onLoad=============')
+    }
+
+    onShow() {
+      console.log('onShow====')
+    }
+
+    onReady() {
+      console.log('onReady=============')
+    }
+
+    onHide() {
+      console.log('onHide====')
     }
   }
 </script>

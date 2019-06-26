@@ -10,7 +10,7 @@
         <text>计时中</text>
         <text>{{ clock[0] }} : {{ clock[1] }} : {{ clock[2] }}</text>
       </view>
-      <picker wx:else @change="bindPickerChange" value="{{ index }}" range="{{ minutesArray }}">
+      <picker wx:else model="selector" @change="bindPickerChange" value="4" range="{{ minutesArray }}">
         <view class="clock">
           <text wx:if="{{ !hadSet }}">点击设置时长 (分钟)</text>
           <text wx:else>暂停中</text>
