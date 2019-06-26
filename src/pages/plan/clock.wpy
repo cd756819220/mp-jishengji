@@ -1,48 +1,56 @@
 <template>
-  <view class="wrap">
-    <view class="plan-head">
-      <text>计划 {{ planTitle }} {{ totalTime }} 分钟</text>
-    </view>
+  <view class="content">
+    <view class="wrap">
+      <view class="plan-head">
+        <text>计划 {{ planTitle }} {{ totalTime }} 分钟</text>
+      </view>
 
-    <!-- 时钟 -->
-    <view class="clock" wx:if="{{ isStart }}">
-      <text>计时中</text>
-      <text>{{ clock[0] }} : {{ clock[1] }} : {{ clock[2] }}</text>
-    </view>
-    <picker wx:else @change="bindPickerChange" value="{{ index }}" range="{{ minutesArray }}">
-      <view class="clock">
-        <text wx:if="{{ !hadSet }}">点击设置时长 (分钟)</text>
-        <text wx:else>暂停中</text>
+      <!-- 时钟 -->
+      <view class="clock" wx:if="{{ isStart }}">
+        <text>计时中</text>
         <text>{{ clock[0] }} : {{ clock[1] }} : {{ clock[2] }}</text>
       </view>
-    </picker>
+      <picker wx:else @change="bindPickerChange" value="{{ index }}" range="{{ minutesArray }}">
+        <view class="clock">
+          <text wx:if="{{ !hadSet }}">点击设置时长 (分钟)</text>
+          <text wx:else>暂停中</text>
+          <text>{{ clock[0] }} : {{ clock[1] }} : {{ clock[2] }}</text>
+        </view>
+      </picker>
 
-    <!-- 底部控制按钮 -->
-    <view class="control-area">
-      <view class="btn-pause" @tap="bindStartOrPause">
-        <text>{{ btnText }}</text>
-      </view>
-      <view class="btn-giveup">
-        <text>放弃</text>
-      </view>
-      <view class="tips">
-        <text>坚持就是胜利</text>
-        <text>放弃意味着放弃本次计划的执行</text>
-        <text>同样也意味着在计划执行过程中的一次“小失败”</text>
+      <!-- 底部控制按钮 -->
+      <view class="control-area">
+        <view class="btn-pause" @tap="bindStartOrPause">
+          <text>{{ btnText }}</text>
+        </view>
+        <view class="btn-giveup">
+          <text>放弃</text>
+        </view>
+        <view class="tips">
+          <text>坚持就是胜利</text>
+          <text>放弃意味着放弃本次计划的执行</text>
+          <text>同样也意味着在计划执行过程中的一次“小失败”</text>
+        </view>
       </view>
     </view>
+    <toast/>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import { getTimeArr, isZero } from '@/utils/util'
+  import Toast from 'wepy-com-toast'
   
   let timer = null
 
   export default class Clock extends wepy.page {
     config = {
       navigationBarTitleText: '计时器'
+    }
+
+    components = {
+      toast: Toast
     }
 
     data = {
@@ -100,6 +108,21 @@
         } else {
           this.isStart = false
           this.btnText = '开始'
+
+          let promise = this.$invoke('toast', 'show', {
+            title: '请先设置时长'
+            // img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+          })
+
+          promise.then((d) => {
+            console.log('toast done')
+            wepy.showToast({
+              title: '请先设置时长',
+              icon: 'warn',
+              duration: 1000
+            })
+          })
+
           console.log('请先设置时长')
         }
         this.$apply()
@@ -138,6 +161,11 @@
 </script>
 
 <style lang="less">
+  .content {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
   .wrap {
     display: flex;
     justify-content: space-around;
