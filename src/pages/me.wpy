@@ -70,6 +70,7 @@
     onLoad() {
       console.log('1onLoad=============')
       this.userInfo = this.$parent.globalData.userInfo
+      // this.$wxapp;
       let self = this
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {

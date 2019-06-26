@@ -37,10 +37,9 @@
 + 完善功能，优化细节
 
 //east modify 2019/6/26
-下一步计划
-1.服务端实现，最近在研究redis，先用mysql实现一套  后面再用redis实现一套
-2.界面美化
-3.接入weui
-
+## 下一步计划:
++ 服务端实现，最近在研究redis，先用mysql实现一套  后面再用redis实现一套
++ 界面美化
++ 接入weui
 ## License
 MIT
