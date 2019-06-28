@@ -61,14 +61,28 @@ export const GetItem = (key) => {
 }
 
 // 格式化日期
-export const formatTime = (date) => {
+export const formatTime = (date, ignoreHMS = false) => {
   var year = date.getFullYear()
   var month = date.getMonth() + 1
   var day = date.getDate()
   var hour = date.getHours()
   var minute = date.getMinutes()
   var second = date.getSeconds()
-  return [year, month, day].map(formatNumber).concat([hour, minute, second].map(formatNumber))
+  if (ignoreHMS) {
+    return [year, month, day].map(formatNumber)
+  } else {
+    return [year, month, day].map(formatNumber).concat([hour, minute, second].map(formatNumber))
+  }
+}
+
+// 格式化日期
+export const formatDate = (date = null) => {
+  date = date || new Date()
+  let list = this.formatTime(date, true)
+  list[0] += '年'
+  list[1] += '月'
+  list[2] += '日'
+  return list
 }
 
 function formatNumber(n) {

@@ -1,10 +1,19 @@
 import wepy from 'wepy'
+import PlanData from '../data/planData'
+import gameApi from './gameApi'
 
 export default class SocketManager {
-  static isConnect = false
+  static _isConnect = false
+  static _seqId = 0;
+  static _sendMsgMap = {}
+
+  static createSeqId() {
+    return this._seqId++
+  }
 
   static async connect() {
-    this.isConnect = false
+    this._isConnect = false
+    this._sendMsgMap = {}
     wepy.connectSocket({
       url: 'ws://localhost:3001',
       header: {
@@ -26,29 +35,43 @@ export default class SocketManager {
     })
 
     wepy.onSocketClose(res => {
-      this.isConnect = false
-      console.log('WebSocket 已关闭！')
+      this._isConnect = false
+      console.error('WebSocket 已关闭！')
     })
 
     wepy.onSocketError(res => {
-      this.isConnect = false
-      console.log('WebSocket连接打开失败，请检查！')
+      this._isConnect = false
+      console.error('WebSocket连接打开失败，请检查！')
     })
 
     wepy.onSocketOpen(res => {
-      this.isConnect = true
+      this._isConnect = true
       console.log('WebSocket连接已打开！')
-      this.sendMsg({name: 'east'})
+      // this.sendMsg({name: 'east'})
+      // this._initAllData()
+      gameApi.sendEnterData()
+      console.log('gameApi', gameApi.hehe)
     })
 
     wepy.onSocketMessage(res => {
       console.log('收到服务器内容：' + res.data)
-      this.sendMsg({name: 'east' + Math.random() * 100000})
+      if (this._sendMsgMap.seqId === res.seqId) {
+        this._sendMsgMap.callFun(res)
+        delete this._sendMsgMap.seqId
+      }
+      // this.sendMsg({name: 'east' + Math.floor(Math.random() * 100000)})
     })
   }
 
-  static sendMsg(msg) {
-    if (!this.isConnect) return
+  static _initAllData() {
+    PlanData.initData()
+  }
+
+  static sendMsg(msg, msgId, callFun = null) {
+    if (!this._isConnect) return
+    msg.seqId = this.createSeqId()
+    msg.msgId = msgId
+    this._sendMsgMap[msg.seqId] = {seqId: msg.seqId, callFun: callFun}
     wepy.sendSocketMessage({
       data: JSON.stringify(msg), // 需要发送的内容
       success: res => {
@@ -67,3 +90,5 @@ export default class SocketManager {
     })
   }
 }
+
+module.exports = SocketManager
