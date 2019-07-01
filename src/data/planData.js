@@ -1,22 +1,13 @@
-// import { formatDate } from '@/utils/util'
+import { formatDate } from '@/utils/util'
 export default class PlanData {
   static _planList = []
 
   static initData(data) {
-    console.log('data=======: ', data)
-    // data = [
-    //   {
-    //     id: 1,
-    //     image: '/images/reading.png',
-    //     title: '阅读',
-    //     remark: '书籍并不是没有生命的东西，它包藏着一种生命的潜力，与作者同样地活跃。不仅如此，它还像一个宝瓶，把作者生机勃勃的智慧中最纯净的精华保存起来。',
-    //     create_time: formatDate(),
-    //     times: 0,
-    //     hours: (24498 / 3600).toFixed(2)
-    //   }
-    // ]
-
     this._planList = data
+    this._planList.forEach(plan => {
+      plan.hours = (plan.hours / 3600).toFixed(2)
+      plan.create_time = formatDate(new Date(plan.create_time))
+    })
     // this._planList = [
     //   {
     //     id: 1,

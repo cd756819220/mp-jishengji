@@ -78,11 +78,11 @@ export const formatTime = (date, ignoreHMS = false) => {
 // 格式化日期
 export const formatDate = (date = null) => {
   date = date || new Date()
-  let list = this.formatTime(date, true)
+  let list = formatTime(date, true)
   list[0] += '年'
   list[1] += '月'
   list[2] += '日'
-  return list
+  return list.join(' ')
 }
 
 function formatNumber(n) {
