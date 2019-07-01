@@ -1,10 +1,11 @@
 import wepy from 'wepy'
-import PlanData from '../data/planData'
 import gameApi from './gameApi'
+
+// console.log('gameApi===============: ', gameApi.sendEnterData)
 
 export default class SocketManager {
   static _isConnect = false
-  static _seqId = 0;
+  static _seqId = 1;
   static _sendMsgMap = {}
 
   static createSeqId() {
@@ -28,7 +29,7 @@ export default class SocketManager {
         console.log('connect fail')
       }
     }).then((res) => {
-      console.log('then', res)
+      // console.log('then', res)
       return res
     }).catch(err => {
       console.log('err', err)
@@ -48,29 +49,30 @@ export default class SocketManager {
       this._isConnect = true
       console.log('WebSocket连接已打开！')
       // this.sendMsg({name: 'east'})
-      // this._initAllData()
       gameApi.sendEnterData()
-      console.log('gameApi', gameApi.hehe)
+      // console.log('gameApi', gameApi.sendEnterData)
     })
 
     wepy.onSocketMessage(res => {
-      console.log('收到服务器内容：' + res.data)
-      if (this._sendMsgMap.seqId === res.seqId) {
-        this._sendMsgMap.callFun(res)
-        delete this._sendMsgMap.seqId
+      let data = JSON.parse(res.data)
+      console.log('收到服务器内容：', data)
+      // console.log('this._sendMsgMap', this._sendMsgMap)
+      let sendData = this._sendMsgMap[data.seqId]
+      if (sendData) {
+        sendData.callFun(data)
+        delete this._sendMsgMap[data.seqId]
+      } else {
+        console.error('[ERROR] data is not send receive! ', data)
       }
       // this.sendMsg({name: 'east' + Math.floor(Math.random() * 100000)})
     })
-  }
-
-  static _initAllData() {
-    PlanData.initData()
   }
 
   static sendMsg(msg, msgId, callFun = null) {
     if (!this._isConnect) return
     msg.seqId = this.createSeqId()
     msg.msgId = msgId
+    // console.log('sendMsg: ', msg)
     this._sendMsgMap[msg.seqId] = {seqId: msg.seqId, callFun: callFun}
     wepy.sendSocketMessage({
       data: JSON.stringify(msg), // 需要发送的内容
