@@ -1,0 +1,104 @@
+<template>
+  <view class="content">
+    <view class="weui-toptips weui-toptips_warn" wx:if="{{tipsFlag}}">输入错误</view>
+    <view class="weui-cells__title">计划名</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input class="weui-input" placeholder="请输入计划名" maxlength="20" @input="binditleInput" />
+            </view>
+        </view>
+    </view>
+    <view class="weui-cells__title">计划内容</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+            <view class="weui-cell__bd">
+                <textarea class="weui-textarea" id="content_text" maxlength="{{ contentMaxLen }}" placeholder="请输入计划内容" style="height: 3.3em" @input="bindContentInput"/>
+                <view class="weui-textarea-counter">{{ maxLenLabel }}</view>
+            </view>
+        </view>
+    </view>
+    <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" @tap="confirmClick">确定</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+import gameApi from '../../manager/gameApi'
+import PlanData from '../../data/planData'
+  
+  export default class Clock extends wepy.page {
+    config = {
+      navigationBarTitleText: '新计划'
+    }
+
+    components = {
+    }
+
+    data = {
+      tipsFlag: false,
+      contentMaxLen: 200,
+      maxLenLabel: '0/200',
+      title: '',
+      content: ''
+    }
+
+    computed = {}
+
+    methods = {
+      confirmClick() {
+        if (this.title.length === 0 || this.content.length === 0) {
+          this.tipsFlag = true
+          setTimeout(() => {
+            this.tipsFlag = false
+            this.$apply()
+          }, 3000)
+        } else {
+          gameApi.sendAddPlan({
+            title: this.title,
+            image: '/images/reading.png',
+            remark: this.content
+          }, (res) => {
+            delete res.seqId
+            delete res.msgId
+            PlanData.addPlan(res)
+            wepy.showToast({
+              title: '已完成',
+              icon: 'success',
+              duration: 3000
+            }).then(() => {
+              wepy.navigateBack()
+            }).catch((err) => {
+              console.error('[ERROR] err! ', err)
+            })
+          })
+        }
+      },
+      binditleInput(e) {
+        this.title = e.detail.value
+      },
+      bindContentInput(e) {
+        this.content = e.detail.value
+        this.maxLenLabel = `${this.content.length}/${this.contentMaxLen}`
+      }
+    }
+
+    onLoad(params) {
+      // 没有传递计划ID，页面报错
+      if (!params.planId || !params.planTitle) return
+      this.planId = params.planId
+      this.planTitle = params.planTitle
+      this.$apply()
+    }
+  }
+</script>
+
+<style lang="less">
+  .content {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>

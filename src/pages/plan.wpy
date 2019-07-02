@@ -15,6 +15,9 @@
         </swiper-item>
       </repeat>
     </swiper>
+    <view class="btn-addplan" @tap="bindToAddPlan('oktest')">
+      <text>+</text>
+    </view>
   </view>
 </template>
 
@@ -34,6 +37,12 @@
 
     components = {
       listitem: ListItem
+    }
+
+    methods = {
+      bindToAddPlan(arg1) {
+        this.$navigate('./plan/planAdd')
+      }
     }
 
     onShow () {
@@ -58,6 +67,24 @@
         align-items: center;
         padding: 60rpx;
         box-sizing: border-box;
+      }
+    }
+    .btn-addplan {
+      position: fixed;
+      right: 30rpx;
+      bottom: 15rpx;
+      height: 100rpx;
+      width: 100rpx;
+      text-align: center;
+      background-color: rgba(19, 140, 255, .9);
+      border-radius: 100%;
+      box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.15);
+      // border: 1rpx solid #ffff00;
+      text{
+        font-size: 40rpx;
+        line-height: 90rpx;
+        color: #fff;
+        // border: 1rpx solid #ff0000;
       }
     }
   }

@@ -26,7 +26,7 @@ module.exports = {
     },
     /*sass: {
       outputStyle: 'compressed'
-    },*/
+    }, */
     babel: {
       sourceMap: !prod,
       presets: [

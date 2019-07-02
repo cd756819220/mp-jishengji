@@ -52,4 +52,8 @@ export default class PlanData {
     console.error('[ERROR] getPlanDataById id is not exist!', id)
     return null
   }
+
+  static addPlan(data) {
+    this._planList.push(data)
+  }
 }

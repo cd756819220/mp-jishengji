@@ -1,4 +1,5 @@
 <style lang="less">
+@import './style/weui.less';
 page{
   height: 100%;
   background-color: #f9fbff;
@@ -26,6 +27,7 @@ export default class extends wepy.app {
       'pages/bill/addone',
       'pages/plan',
       'pages/plan/clock',
+      'pages/plan/planAdd',
       'pages/bill',
       'pages/me'
       // 子页面

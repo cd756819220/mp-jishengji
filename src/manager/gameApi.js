@@ -1,16 +1,19 @@
 import PlanData from '../data/planData'
-
+import socketManager from './socketManager'
+import msgData from '@/data/msgData'
 export default class gameApi {
-  static hehe = 9999
   static sendEnterData() {
-    let socketManager = require('./socketManager')
-    console.log('test sendEnterData', socketManager.sendMsg)
-    socketManager.sendMsg({
-
-    }, 999, (res) => {
+    socketManager.sendMsg({}, msgData.GAME_ENTER.msgId, (res) => {
       // console.log('receiveMsg: ', res)
       PlanData.initData(res.list)
     })
-    console.log('sendEnterData completed')
+  }
+
+  static sendAddPlan(newPlan, callFun) {
+    socketManager.sendMsg(newPlan, msgData.ADD_PLAN.msgId, (res) => {
+      if (callFun) {
+        callFun(res)
+      }
+    })
   }
 }
