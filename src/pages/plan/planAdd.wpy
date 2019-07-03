@@ -64,12 +64,15 @@ import PlanData from '../../data/planData'
             delete res.seqId
             delete res.msgId
             PlanData.addPlan(res)
+            let delayTime = 1500
             wepy.showToast({
               title: '已完成',
               icon: 'success',
-              duration: 3000
+              duration: delayTime
             }).then(() => {
-              wepy.navigateBack()
+              setTimeout(() => {
+                wepy.navigateBack()
+              }, delayTime)
             }).catch((err) => {
               console.error('[ERROR] err! ', err)
             })
