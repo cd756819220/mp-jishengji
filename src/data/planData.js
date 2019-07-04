@@ -56,4 +56,14 @@ export default class PlanData {
   static addPlan(data) {
     this._planList.push(data)
   }
+
+  static removePlan(planId) {
+    this._planList.some((plan, index) => {
+      if (plan.id === planId) {
+        this._planList.splice(index, 1)
+        return true
+      }
+      return false
+    })
+  }
 }

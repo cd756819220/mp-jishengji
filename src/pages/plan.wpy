@@ -1,6 +1,6 @@
 <template>
   <view class="wrap">
-    <swiper class="swiper" indicator-dots="true" autoplay="false" duration="300">
+    <swiper class="swiper" indicator-dots="true" autoplay="{{ isAutoPlay }}" duration="300" interval="2000" @change="swiperChanged" current="{{ currentPlanIndex }}">
       <repeat for="{{ planList }}" key="index" index="index" item="item">
         <swiper-item>
           <listitem 
@@ -15,7 +15,10 @@
         </swiper-item>
       </repeat>
     </swiper>
-    <view class="btn-addplan" @tap="bindToAddPlan('oktest')">
+    <view class="btn-deleteplan btn-menu" @tap="bindToDeletePlan">
+      <text>-</text>
+    </view>
+    <view class="btn-addplan btn-menu" @tap="bindToAddPlan('oktest')">
       <text>+</text>
     </view>
   </view>
@@ -25,6 +28,7 @@
   import wepy from 'wepy'
   import ListItem from '@/components/plan/listitem'
   import planData from '@/data/planData'
+  import gameApi from '@/manager/gameApi'
 
   export default class Plan extends wepy.page {
     config = {
@@ -32,6 +36,8 @@
     }
 
     data = {
+      isAutoPlay: true,
+      currentPlanIndex: 0,
       planList: []
     }
 
@@ -42,11 +48,56 @@
     methods = {
       bindToAddPlan(arg1) {
         this.$navigate('./plan/planAdd')
+      },
+      bindToDeletePlan() {
+        if (this._currentPlanId === null) {
+          wepy.showToast({
+            title: '没有可删除计划！', // 提示的内容,
+            icon: 'success', // 图标,
+            duration: 2000, // 延迟时间,
+            mask: true // 显示透明蒙层，防止触摸穿透,
+          })
+          return
+        }
+        this.isAutoPlay = false
+        wepy.showModal({
+          content: '确定删除当前计划？'
+        }).then((res) => {
+          if (res.confirm) {
+            let delPlanId = this._currentPlanId
+            gameApi.sendDeletePlan(delPlanId, () => {
+              planData.removePlan(delPlanId)
+              this.currentPlanIndex = this.planList.length > 0 ? 0 : -1
+              this.setData({currentPlanIndex: this.currentPlanIndex})
+              wepy.showToast({
+                title: '删除成功！', // 提示的内容,
+                icon: 'success', // 图标,
+                duration: 2000, // 延迟时间,
+                mask: true // 显示透明蒙层，防止触摸穿透,
+              }).then(() => {
+                setTimeout(() => {
+                  this.isAutoPlay = true
+                  this.$apply()
+                }, 2000)
+              })
+            })
+          } else if (res.cancel) {
+            this.isAutoPlay = true
+            this.$apply()
+          }
+        })
+      },
+      swiperChanged(data) {
+        this._currentPlanId = this.planList[data.detail.current].id
       }
     }
 
-    onShow () {
+    onLoad() {
       this.planList = planData.getPlanList()
+      this._currentPlanId = null
+      if (this.planList.length > 0) {
+        this._currentPlanId = this.planList[0].id
+      }
     }
   }
 </script>
@@ -69,10 +120,8 @@
         box-sizing: border-box;
       }
     }
-    .btn-addplan {
+    .btn-menu {
       position: fixed;
-      right: 30rpx;
-      bottom: 15rpx;
       height: 100rpx;
       width: 100rpx;
       text-align: center;
@@ -86,6 +135,14 @@
         color: #fff;
         // border: 1rpx solid #ff0000;
       }
+    }
+    .btn-addplan {
+      right: 30rpx;
+      bottom: 15rpx;
+    }
+    .btn-deleteplan {
+      right: 30rpx;
+      top: 15rpx;
     }
   }
 </style>

@@ -16,4 +16,12 @@ export default class gameApi {
       }
     })
   }
+
+  static sendDeletePlan(planId, callFun) {
+    socketManager.sendMsg({id: planId}, msgData.DEL_PLAN.msgId, (res) => {
+      if (callFun) {
+        callFun(res)
+      }
+    })
+  }
 }

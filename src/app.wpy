@@ -90,7 +90,6 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    // this.testAsync()
     this.login()
   }
 
@@ -98,19 +97,6 @@ export default class extends wepy.app {
     let res = await wepy.login()
     console.log('long res: ', res)
     SocketManager.connect()
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
   }
 
   async getUserInfo(cb) {
