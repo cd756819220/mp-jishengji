@@ -80,7 +80,7 @@
 
     _startLogin() {
       gameApi.sendEnterData(res => {
-        wepy.switchTab({ url: 'index' })
+        this.$switch({ url: 'index' })
       })
     }
   }

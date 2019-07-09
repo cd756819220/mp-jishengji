@@ -2,11 +2,15 @@ import wepy from 'wepy'
 
 export default class SocketManager {
   static _isConnect = false
-  static _seqId = 1;
+  static _seqId = 1
   static _sendMsgMap = {}
 
   static createSeqId() {
     return this._seqId++
+  }
+
+  static isConnect() {
+    return this._isConnect
   }
 
   static async connect(connectFun) {
@@ -34,7 +38,7 @@ export default class SocketManager {
         confirmColor: '#3CC51F'
       }).then((res) => {
         if (res.success) {
-          this.connect()
+          this.connect(this.connectFun)
         }
       })
     })

@@ -17,6 +17,7 @@ page{
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
+import SocketManager from '@/manager/socketManager'
 
 export default class extends wepy.app {
   config = {
@@ -90,6 +91,30 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
+    this._firstShow = true
+  }
+
+  // onShow () {
+  //   console.log('onshow fuck')
+  // }
+  onShow() {
+    if (this._firstShow === false && !SocketManager.isConnect()) {
+      wepy.showModal({
+        title: '提示',
+        content: '网络已经关闭，请重新连接！',
+        showCancel: false,
+        confirmText: '确定',
+        confirmColor: '#3CC51F'
+      }).then((res) => {
+        if (res.confirm) {
+          console.log('shithehe')
+          SocketManager.connect(SocketManager.connectFun)
+        }
+      }).catch(err => {
+        console.error('[ERROR] testtest', err)
+      })
+    }
+    this._firstShow = false
   }
 
   async getUserInfo(cb) {
