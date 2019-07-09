@@ -1,7 +1,7 @@
 <template>
   <view class="listitem">
     <view class="image">
-      <image src="{{ image }}"></image>
+      <image src="{{ image }}" />
     </view>
     <text class="title">{{ title }}</text>
     <text class="remark">{{ remark }}</text>

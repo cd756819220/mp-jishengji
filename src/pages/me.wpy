@@ -6,7 +6,7 @@
         <text>{{ assets }} 币</text>
       </view>
       <view class="center">
-        <image src="{{ userInfo.avatarUrl }}"></image>
+        <image src="{{ userInfo.avatarUrl }} " />
         <text>{{ userInfo.nickName }}</text>
         <text>{{ userInfo.country }}</text>
       </view>

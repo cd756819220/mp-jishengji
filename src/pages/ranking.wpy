@@ -17,7 +17,7 @@
         <repeat for="{{ rankList }}" key="index" index="index" item="item">
           <view class="item" data-id="{{ item.id }}">
             <view class="number">{{ index + 1 }}</view>
-            <image src="{{ item.image }}"></image>
+            <image src="{{ item.image }}" />
             <text class="name">{{ item.name }}</text>
             <text class="val">{{ item.val }}</text>
           </view>

@@ -1,7 +1,4 @@
 import wepy from 'wepy'
-import gameApi from './gameApi'
-
-// console.log('gameApi===============: ', gameApi.sendEnterData)
 
 export default class SocketManager {
   static _isConnect = false
@@ -12,27 +9,33 @@ export default class SocketManager {
     return this._seqId++
   }
 
-  static async connect() {
+  static async connect(connectFun) {
     this._isConnect = false
     this._sendMsgMap = {}
     wepy.connectSocket({
-      url: 'ws://localhost:3001',
+      url: 'ws://localhost:3001', // 'ws://207.246.87.65:3001',
       header: {
         'origin': '',
         'content-type': 'application/json'
       },
-      method: 'GET',
-      success () {
-        console.log('connect连接成功')
-      },
-      fail () {
-        console.log('connect fail')
-      }
+      method: 'GET'
     }).then((res) => {
       // console.log('then', res)
+      connectFun && connectFun()
       return res
     }).catch(err => {
-      console.log('err', err)
+      console.error('[ERROR] err: ', err)
+      wepy.showModal({
+        title: '提示',
+        content: '连接失败，请请试！',
+        showCancel: false,
+        confirmText: '确定',
+        confirmColor: '#3CC51F'
+      }).then((res) => {
+        if (res.success) {
+          this.connect()
+        }
+      })
     })
 
     wepy.onSocketClose(res => {
@@ -48,9 +51,6 @@ export default class SocketManager {
     wepy.onSocketOpen(res => {
       this._isConnect = true
       console.log('WebSocket连接已打开！')
-      // this.sendMsg({name: 'east'})
-      gameApi.sendEnterData()
-      // console.log('gameApi', gameApi.sendEnterData)
     })
 
     wepy.onSocketMessage(res => {
@@ -75,16 +75,7 @@ export default class SocketManager {
     // console.log('sendMsg: ', msg)
     this._sendMsgMap[msg.seqId] = {seqId: msg.seqId, callFun: callFun}
     wepy.sendSocketMessage({
-      data: JSON.stringify(msg), // 需要发送的内容
-      success: res => {
-        console.log('send success')
-      },
-      fail: () => {
-        console.log('send fail')
-      },
-      complete: () => {
-        console.log('send complete')
-      }
+      data: JSON.stringify(msg) // 需要发送的内容
     }).then(res => {
       console.log('sendSocketMessage ok: ', res)
     }).catch(err => {
@@ -92,5 +83,3 @@ export default class SocketManager {
     })
   }
 }
-
-module.exports = SocketManager

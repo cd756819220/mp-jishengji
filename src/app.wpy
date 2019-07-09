@@ -17,11 +17,11 @@ page{
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-import SocketManager from './manager/socketManager'
 
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/start',
       'pages/index',
       'pages/ranking',
       'pages/bill/addone',
@@ -90,13 +90,6 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    this.login()
-  }
-
-  async login() {
-    let res = await wepy.login()
-    console.log('long res: ', res)
-    SocketManager.connect()
   }
 
   async getUserInfo(cb) {
