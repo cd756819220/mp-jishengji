@@ -101,7 +101,8 @@ export default class extends wepy.app {
 
   async getUserInfo(cb) {
     if (!this.globalData.userInfo) {
-      this.globalData.userInfo = await wepy.getUserInfo()
+      let data = await wepy.getUserInfo()
+      this.globalData.userInfo = data.userInfo
     }
     cb && cb(this.globalData.userInfo)
   }
