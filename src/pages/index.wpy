@@ -151,6 +151,14 @@
 
     onLoad() {
       this.getUserInfo()
+      wepy.showShareMenu({
+        withShareTicket: true
+      })
+      // wx.showShareMenu()
+    }
+
+    onShareAppMessage(options) {
+      console.log(options)
     }
 
     getUserInfo() {

@@ -94,9 +94,6 @@ export default class extends wepy.app {
     this._firstShow = true
   }
 
-  // onShow () {
-  //   console.log('onshow fuck')
-  // }
   onShow() {
     if (this._firstShow === false && !SocketManager.isConnect()) {
       wepy.showModal({
