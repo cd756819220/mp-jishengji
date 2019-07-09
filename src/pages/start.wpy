@@ -37,6 +37,7 @@
     _connectServer() {
       SocketManager.connect(() => {
         let token = userData.getToken()
+        console.log('connect ok: ', token)
         if (token) {
           console.log('直接登录')
           this._startLogin()

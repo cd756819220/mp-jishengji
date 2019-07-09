@@ -11,9 +11,10 @@ export default class SocketManager {
 
   static async connect(connectFun) {
     this._isConnect = false
+    this.connectFun = connectFun
     this._sendMsgMap = {}
     wepy.connectSocket({
-      url: 'ws://localhost:3001', // 'ws://207.246.87.65:3001',
+      url: 'ws://207.246.87.65:3001', // 'ws://localhost:3001'
       header: {
         'origin': '',
         'content-type': 'application/json'
@@ -21,7 +22,7 @@ export default class SocketManager {
       method: 'GET'
     }).then((res) => {
       // console.log('then', res)
-      connectFun && connectFun()
+      // connectFun && connectFun()//这里可能比链接成功回调函数先调，也可能后调
       return res
     }).catch(err => {
       console.error('[ERROR] err: ', err)
@@ -51,6 +52,7 @@ export default class SocketManager {
     wepy.onSocketOpen(res => {
       this._isConnect = true
       console.log('WebSocket连接已打开！')
+      this.connectFun()
     })
 
     wepy.onSocketMessage(res => {
