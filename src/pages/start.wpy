@@ -14,7 +14,8 @@
     config = {
       navigationBarBackgroundColor: '#2dc8b7',
       navigationBarTitleText: '欢迎您的到来',
-      disableScroll: true
+      disableScroll: true,
+      enablePullDownRefresh: false
     }
 
     data = {
