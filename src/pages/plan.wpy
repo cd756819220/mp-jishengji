@@ -15,11 +15,8 @@
         </swiper-item>
       </repeat>
     </swiper>
-    <view class="btn-deleteplan btn-menu" @tap="bindToDeletePlan">
-      <text>-</text>
-    </view>
     <view class="btn-addplan btn-menu" @tap="bindToAddPlan('oktest')">
-      <text>+</text>
+      <text>...</text>
     </view>
   </view>
 </template>
@@ -46,50 +43,68 @@
     }
 
     methods = {
-      bindToAddPlan(arg1) {
-        this.$navigate('./plan/planAdd')
-      },
-      bindToDeletePlan() {
-        if (this._currentPlanId === null) {
-          wepy.showToast({
-            title: '没有可删除计划！', // 提示的内容,
-            icon: 'success', // 图标,
-            duration: 2000, // 延迟时间,
-            mask: true // 显示透明蒙层，防止触摸穿透,
-          })
-          return
-        }
+      async bindToAddPlan() {
         this.isAutoPlay = false
-        wepy.showModal({
-          content: '确定删除当前计划？'
-        }).then((res) => {
-          if (res.confirm) {
-            let delPlanId = this._currentPlanId
-            gameApi.sendDeletePlan(delPlanId, () => {
-              planData.removePlan(delPlanId)
-              this.currentPlanIndex = this.planList.length > 0 ? 0 : -1
-              this.setData({currentPlanIndex: this.currentPlanIndex})
-              wepy.showToast({
-                title: '删除成功！', // 提示的内容,
-                icon: 'success', // 图标,
-                duration: 2000, // 延迟时间,
-                mask: true // 显示透明蒙层，防止触摸穿透,
-              }).then(() => {
-                setTimeout(() => {
-                  this.isAutoPlay = true
-                  this.$apply()
-                }, 2000)
-              })
-            })
-          } else if (res.cancel) {
+        wepy.showActionSheet({
+          itemList: ['添加新计划', '移除当前计划']
+        }).then(res => {
+          if (res.tapIndex === 0) {
+            this.$navigate('./plan/planAdd')
+          } else if (res.tapIndex === 1) {
+            this._deleteCurPanel()
+          }
+          if (res.tapIndex !== 1) {
             this.isAutoPlay = true
             this.$apply()
           }
+          return res
+        }).catch(() => {
+          this.isAutoPlay = true
+          this.$apply()
         })
       },
       swiperChanged(data) {
         this._currentPlanId = this.planList[data.detail.current].id
       }
+    }
+
+    _deleteCurPanel() {
+      if (this._currentPlanId === null) {
+        wepy.showToast({
+          title: '没有可删除计划！', // 提示的内容,
+          icon: 'success', // 图标,
+          duration: 2000, // 延迟时间,
+          mask: true // 显示透明蒙层，防止触摸穿透,
+        })
+        return
+      }
+      this.isAutoPlay = false
+      wepy.showModal({
+        content: '确定删除当前计划？'
+      }).then((res) => {
+        if (res.confirm) {
+          let delPlanId = this._currentPlanId
+          gameApi.sendDeletePlan(delPlanId, () => {
+            planData.removePlan(delPlanId)
+            this.currentPlanIndex = this.planList.length > 0 ? 0 : -1
+            this.setData({currentPlanIndex: this.currentPlanIndex})
+            wepy.showToast({
+              title: '删除成功！', // 提示的内容,
+              icon: 'success', // 图标,
+              duration: 2000, // 延迟时间,
+              mask: true // 显示透明蒙层，防止触摸穿透,
+            }).then(() => {
+              setTimeout(() => {
+                this.isAutoPlay = true
+                this.$apply()
+              }, 2000)
+            })
+          })
+        } else if (res.cancel) {
+          this.isAutoPlay = true
+          this.$apply()
+        }
+      })
     }
 
     onLoad() {
@@ -130,8 +145,13 @@
       box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.15);
       // border: 1rpx solid #ffff00;
       text{
-        font-size: 40rpx;
-        line-height: 90rpx;
+        position: absolute;
+        top: -12%;
+        left: 0;
+        font-weight: bold;
+        font-size: 60rpx;
+        line-height: 100rpx;
+        width: 100%;
         color: #fff;
         // border: 1rpx solid #ff0000;
       }
@@ -139,10 +159,6 @@
     .btn-addplan {
       right: 30rpx;
       bottom: 15rpx;
-    }
-    .btn-deleteplan {
-      right: 30rpx;
-      top: 15rpx;
     }
   }
 </style>
