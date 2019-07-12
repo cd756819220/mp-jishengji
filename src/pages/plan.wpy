@@ -84,21 +84,28 @@
       }).then((res) => {
         if (res.confirm) {
           let delPlanId = this._currentPlanId
-          gameApi.sendDeletePlan(delPlanId, () => {
-            planData.removePlan(delPlanId)
-            this.currentPlanIndex = this.planList.length > 0 ? 0 : -1
-            this.setData({currentPlanIndex: this.currentPlanIndex})
-            wepy.showToast({
-              title: '删除成功！', // 提示的内容,
-              icon: 'success', // 图标,
-              duration: 2000, // 延迟时间,
-              mask: true // 显示透明蒙层，防止触摸穿透,
-            }).then(() => {
-              setTimeout(() => {
-                this.isAutoPlay = true
-                this.$apply()
-              }, 2000)
-            })
+          console.log('delPlanId: ', delPlanId)
+          gameApi.sendDeletePlan(delPlanId, (res) => {
+            if (res.code === 0) {
+              planData.removePlan(delPlanId)
+              this.currentPlanIndex = 1 // this.planList.length > 0 ? 0 : -1
+              console.log('currentPlanIndex: ', this.currentPlanIndex)
+              this.$apply()
+              this.setData({currentPlanIndex: this.currentPlanIndex})
+              wepy.showToast({
+                title: '删除成功！', // 提示的内容,
+                icon: 'success', // 图标,
+                duration: 2000, // 延迟时间,
+                mask: true // 显示透明蒙层，防止触摸穿透,
+              }).then(() => {
+                setTimeout(() => {
+                  this.isAutoPlay = true
+                  this.$apply()
+                }, 2000)
+              })
+            } else {
+              console.error('[ERROR] delPlanId is not exist!')
+            }
           })
         } else if (res.cancel) {
           this.isAutoPlay = true

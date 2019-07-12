@@ -22,6 +22,7 @@ import SocketManager from '@/manager/socketManager'
 export default class extends wepy.app {
   config = {
     pages: [
+      // 'pages/test',
       'pages/start',
       'pages/index',
       'pages/ranking',

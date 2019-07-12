@@ -18,7 +18,7 @@ export default class SocketManager {
     this.connectFun = connectFun
     this._sendMsgMap = {}
     wepy.connectSocket({
-      url: 'ws://207.246.87.65:3001', // 'ws://localhost:3001'
+      url: 'ws://207.246.87.65:3001', // 'ws://localhost:3001',
       header: {
         'origin': '',
         'content-type': 'application/json'
