@@ -13,7 +13,7 @@ export default class gameApi {
   }
 
   static sendEnterData(callFun) {
-    socketManager.sendMsg({token: userData.getToken()}, msgData.GAME_ENTER.msgId, (res) => {
+    socketManager.sendMsg({token: userData.getToken()}, msgData.LOGIN.msgId, (res) => {
       // console.log('receiveMsg: ', res)
       PlanData.initData(res.list)
       callFun && callFun(res)
